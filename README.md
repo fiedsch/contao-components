@@ -18,7 +18,7 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['json_data'] = [
    'sql'       => "blob NULL",
  ];
  ```
-Other valid options in `eval` are the same as for `testarea`s (as `WidgetJSON` extends `TextArea`), 
+Other valid options in `eval` are the same as for `textarea`s (as `WidgetJSON` extends `TextArea`), 
 except that setting `rte` will be ignored because the editors provided do not make sense here. 
 
 
