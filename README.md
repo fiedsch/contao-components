@@ -6,7 +6,7 @@
 
 The `jsonWidget` can be used in DCA files to create a text field that contains a JSON string.
 While saving it will be checked if that sting is valid JSON. 
-The widget displays the JSON string with `JSON_PRETTY_PRINT` so that check by the reader are are easier.
+The widget displays the JSON string with `JSON_PRETTY_PRINT` so that checks by the reader are are easier.
   
 #### Example
 
