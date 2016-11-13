@@ -1,6 +1,8 @@
 # Components for Contao
 
+
 ## Widgets
+
 
 ### JSON widget
 
@@ -8,7 +10,8 @@ The `jsonWidget` can be used in DCA files to create a text field that contains a
 While saving it will be checked if that sting is valid JSON. 
 The widget displays the JSON string with `JSON_PRETTY_PRINT` so that checks by the reader are are easier.
   
-#### Example
+
+#### Example: extending Members
 
 ```php
 $GLOBALS['TL_DCA']['tl_member']['fields']['json_data'] = [
@@ -22,3 +25,109 @@ Other valid options in `eval` are the same as for `textarea`s (as `WidgetJSON` e
 except that setting `rte` will be ignored because the editors provided do not make sense here. 
 
 
+#### How to use that?
+
+Extend `tl_member` as in the above example. Then create an `ExtendedMemberModel` that 
+extends Contao's `MemberModel`. In the magic methodd `__set()` and `_get` you can intercept
+the "fields" stored in `json_data`:
+
+```php
+// models/ExtendedMemberModel.php
+namespace Contao;
+
+class ExtendedMemberModel extends \MemberModel
+{
+
+  /**
+    * The column name we selected for the `jsonWidget` in the example above
+    * @var string
+    */
+    protected static $strJsonColumn = 'json_data';
+
+    /**
+     * Return an object property
+     * 
+     * @param $strKey the property key (the name of the column/dca field)
+     * @return mixed|null the property value or null if the property does not exist/is not set
+     */
+    public function __get($strKey) 
+    {  
+      $tableColumns = \Database::getInstance()->getFieldNames(static::$strTable);
+      if (in_array($strKey, $tableColumns)) {
+        $value = parent::__get($strKey);
+      } else {
+        $value = null;
+        if (!is_null($this->arrData[static::$strJsonColumn])) {
+          $jsonString = $this->arrData[static::$strJsonColumn];
+          if (!empty($jsonString)) {
+            $jsonData = json_decode($jsonString, true);
+            $value = isset($jsonData[$strKey]) ? $jsonData[$strKey] : null;
+          }
+        }
+      }
+      return $value;
+    }
+
+   /**
+    * Set a value
+    *
+    * @param $strKey the property key (the name of the column/dca field)
+    * @param mixed $varValue the property value  
+    */
+    public function __set($strKey, $varValue) {
+      $tableColumns = \Database::getInstance()->getFieldNames(static::$strTable);
+      if ($strKey === $strJsonColumn) {
+               throw new \RuntimeException("you can not access this column directly");
+      }
+      if (in_array($strKey, $tableColumns)) {
+        parent::__set($strKey, $varValue);
+      } else {
+        $jsonString = $this->arrData[static::$strJsonColumn];
+        $jsonData = null;
+        if (!empty($jsonString)) {
+          $jsonData = json_decode($jsonString, true);
+        }
+        if (is_null($jsonData)) { $jsonData = []; }
+        $jsonData[$strKey] = $varValue;
+        $jsonStr = json_encode($jsonData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        parent::__set(static::$strJsonColumn, $jsonStr);
+      }
+    }
+
+}
+```
+
+```php
+// config/config.php
+$GLOBALS['TL_MODELS']['tl_member'] = 'Contao\ExtendedMemberModel';
+```
+
+```php
+// config/autoload.php
+// ...
+ClassLoader::addClasses(
+    [
+        // ...
+        'Contao\ExtendedMemberModel' => 'system/modules/your_extension/models/ExtendedMemberModel.php',
+        // ...
+    ]
+);
+// ...
+```
+
+#### And finally ...
+
+```php
+$member = \ExtendedMemberModel::findById(42);
+
+// access fields columns created by contao's default DCA
+printf("read member %s %s\n", $member->firstname, $member->lastname);
+
+// access a field stored in our JSON data column
+printf "transparently accessing a field from the JSON data ... '%s'\n", $member->whatever);
+
+// set values and store in database
+$member->a_key_for_a_scalar_value = "fourtytwo";
+$member->key_for_an_array = ['an','array,'containing','some','strings'];
+$member->save();
+```
