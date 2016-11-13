@@ -24,5 +24,8 @@
         "": "system/modules/fiedsch-components"
       }
     }
-  }
+  },
+  "replace": {
+    "fiedsch/contao-components":"*"
+  },
 }
