@@ -29,7 +29,7 @@ except that setting `rte` will be ignored because the editors provided do not ma
 
 Extend `tl_member` as in the above example. Then create an `ExtendedMemberModel` that 
 extends Contao's `MemberModel`. In the magic methodd `__set()` and `_get` you can intercept
-the "fields" stored in `json_data`:
+the "fields" stored in `json_data`. The `Fiedsch\JsonGetterSetterTrait` takes care of that:
 
 ```php
 // models/ExtendedMemberModel.php
@@ -37,62 +37,14 @@ namespace Contao;
 
 class ExtendedMemberModel extends \MemberModel
 {
+    // let __set() and __get take care of the JSON data
+    use \Fiedsch\JsonGetterSetterTrait;
 
   /**
     * The column name we selected for the `jsonWidget` in the example above
     * @var string
     */
     protected static $strJsonColumn = 'json_data';
-
-    /**
-     * Return an object property
-     * 
-     * @param $strKey the property key (the name of the column/dca field)
-     * @return mixed|null the property value or null if the property does not exist/is not set
-     */
-    public function __get($strKey) 
-    {  
-      $tableColumns = \Database::getInstance()->getFieldNames(static::$strTable);
-      if (in_array($strKey, $tableColumns)) {
-        $value = parent::__get($strKey);
-      } else {
-        $value = null;
-        if (!is_null($this->arrData[static::$strJsonColumn])) {
-          $jsonString = $this->arrData[static::$strJsonColumn];
-          if (!empty($jsonString)) {
-            $jsonData = json_decode($jsonString, true);
-            $value = isset($jsonData[$strKey]) ? $jsonData[$strKey] : null;
-          }
-        }
-      }
-      return $value;
-    }
-
-   /**
-    * Set a value
-    *
-    * @param $strKey the property key (the name of the column/dca field)
-    * @param mixed $varValue the property value  
-    */
-    public function __set($strKey, $varValue) {
-      $tableColumns = \Database::getInstance()->getFieldNames(static::$strTable);
-      if ($strKey === $strJsonColumn) {
-               throw new \RuntimeException("you can not access this column directly");
-      }
-      if (in_array($strKey, $tableColumns)) {
-        parent::__set($strKey, $varValue);
-      } else {
-        $jsonString = $this->arrData[static::$strJsonColumn];
-        $jsonData = null;
-        if (!empty($jsonString)) {
-          $jsonData = json_decode($jsonString, true);
-        }
-        if (is_null($jsonData)) { $jsonData = []; }
-        $jsonData[$strKey] = $varValue;
-        $jsonStr = json_encode($jsonData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        parent::__set(static::$strJsonColumn, $jsonStr);
-      }
-    }
 
 }
 ```
