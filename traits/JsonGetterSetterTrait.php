@@ -21,6 +21,7 @@ trait JsonGetterSetterTrait {
      */
     public function __get($strKey)
     {
+        // FIXME; is \Model::getUniqueFields() cheaper that querying the database?
         $tableColumns = \Database::getInstance()->getFieldNames(static::$strTable);
         if (in_array($strKey, $tableColumns)) {
             $value = parent::__get($strKey);
@@ -45,7 +46,7 @@ trait JsonGetterSetterTrait {
      */
     public function __set($strKey, $varValue) {
         $tableColumns = \Database::getInstance()->getFieldNames(static::$strTable);
-        if ($strKey === $strJsonColumn) {
+        if ($strKey === static::$strJsonColumn) {
             throw new \RuntimeException("you can not access this column directly");
         }
         if (in_array($strKey, $tableColumns)) {
