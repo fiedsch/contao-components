@@ -75,7 +75,7 @@ class WidgetJSON extends TextArea
      */
     protected function prettyPrintJson($jsonString)
     {
-        $decoded = json_decode($jsonString, true);
+        $decoded = json_decode($jsonString);
         if (null === $decoded) {
             return $jsonString;
         }
@@ -90,7 +90,7 @@ class WidgetJSON extends TextArea
      */
     protected function minifyJson($jsonString)
     {
-        $decoded = json_decode($jsonString, true);
+        $decoded = json_decode($jsonString);
         if (null === $decoded) {
             return $jsonString;
         }
