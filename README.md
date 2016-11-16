@@ -20,6 +20,9 @@ $GLOBALS['TL_DCA']['tl_member']['fields']['json_data'] = [
    'eval'      => ['tl_style'=>'long', 'decodeEntities'=>true, 'allowHtml'=>true ], 
    'sql'       => "blob NULL",
  ];
+ 
+ // Add json_data to $GLOBALS['TL_DCA']['tl_member']['palettes']['default'] 
+ // where ever you like
  ```
 Other valid options in `eval` are the same as for `textarea`s (as `WidgetJSON` extends `TextArea`), 
 except that setting `rte` will be ignored because the editors provided do not make sense here. 
@@ -76,10 +79,10 @@ $member = \ExtendedMemberModel::findById(42);
 printf("read member %s %s\n", $member->firstname, $member->lastname);
 
 // access a field stored in our JSON data column
-printf "transparently accessing a field from the JSON data ... '%s'\n", $member->whatever);
+printf("transparently accessing a field from the JSON data ... '%s'\n", $member->whatever);
 
 // set values and store in database
 $member->a_key_for_a_scalar_value = "fourtytwo";
-$member->key_for_an_array = ['an','array,'containing','some','strings'];
+$member->key_for_an_array = ['an','array','containing','some','strings'];
 $member->save();
 ```
