@@ -86,3 +86,90 @@ $member->a_key_for_a_scalar_value = "fourtytwo";
 $member->key_for_an_array = ['an','array','containing','some','strings'];
 $member->save();
 ```
+
+## Helper Classes
+
+### Reading YAML config files
+ 
+ ```php
+use Fiedsch\YamlConfigHelper;
+
+$defaults = [
+    'messages' => [
+                    'de' => 'Guten Tag',
+                    'fr' => 'Bonjour',
+                    'en' => 'Hello',
+                   ]
+            ];
+$config = new YamlConfigHelper('files/config/config.yml', $defaults);
+```
+If `files/config/config.yml` does not exist it will be created with 
+the data specified in (the optional parameter) `$defaults`:
+```yaml
+messages:
+    de: 'Guten Tag'
+    fr: 'Bonjour'
+    en: 'Hello'
+``` 
+Use the `YamlConfigHelper` instance `$config` like so:
+```php
+$config->getEntry('data.messages.de'); // 'Guten Tag'
+$config->getEntry('data.messages.es'); // null
+```
+Let's say that as expected `files/config/config.yml` exists and contains  
+```yaml
+   messages:
+       de: 'Guten Morgen'
+       fr: 'Bonjour'
+       en: 'Good Morning'
+ ```
+You would get  
+```php
+$config->getEntry('data.messages.de'); // 'Guten Morgen'
+$config->getEntry('data.messages.es'); // null
+```
+with the data in `$defaults` being ignored. There will be no merge of what is read from 
+the config file and the specified `$defaults`!
+
+For details using Symfony's `ExpressionLanguage` see 
+http://symfony.com/doc/current/components/expression_language.html
+
+#### Specifying a default
+
+With the config data as above:
+
+```php
+$config->getEntry('data.messages.es'); // null
+$config->getEntry('data.messages.es', "¡buenos días!"); // "¡buenos días!"
+```
+
+#### Data types
+
+withe the configuration file as above
+```php
+$config->getEntry('data.messages');
+/*
+object(stdClass)#233 (3) {
+  ["de"]=>
+  string(12) "Guten Morgen"
+  ["fr"]=>
+  string(7) "Bonjour"
+  ["en"]=>
+  string(12) "Good Morning"
+}
+*/
+```
+returns a `stdClass` Instance. If you need the data as an `array`, you have to type cast to `array`
+```php
+(array)$config->getEntry('data.messages');
+/*
+array(3) {
+  ["de"]=>
+  string(12) "Guten Morgen"
+  ["fr"]=>
+  string(7) "Bonjour"
+  ["en"]=>
+  string(12) "Good Morning"
+}
+*/
+```
