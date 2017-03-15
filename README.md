@@ -101,7 +101,7 @@ $defaults = [
                     'en' => 'Hello',
                    ]
             ];
-$config = new YamlConfigHelper('files/config/config.yml', $defaults);
+$config = new YamlConfigHelper('files/config/config.yaml', $defaults);
 ```
 If `files/config/config.yml` does not exist it will be created with 
 the data specified in (the optional parameter) `$defaults`:
@@ -116,7 +116,7 @@ Use the `YamlConfigHelper` instance `$config` like so:
 $config->getEntry('data.messages.de'); // 'Guten Tag'
 $config->getEntry('data.messages.es'); // null
 ```
-Let's say that as expected `files/config/config.yml` exists and contains  
+Let's say that as expected `files/config/config.yaml` exists and contains  
 ```yaml
    messages:
        de: 'Guten Morgen'
@@ -173,3 +173,19 @@ array(3) {
 }
 */
 ```
+
+### Please note
+
+Using 
+```php
+$config = new YamlConfigHelper('files/sompe/path/to/a/file.yaml');
+```
+please note that `file.yaml` is publicly accessible (in Contao 3) unless some folder 
+along the path `files/sompe/path/to/a/` is protected by a `.htaccess file` (the lock 
+icon in the Contao backend). 
+
+If you want to make the file editable for Contao backend users:
+* place it in (a folder below) `files/`
+* make the file extension `.yaml` so Contaos syntax highlighting will be triggered
+  (which will not happen with a `.yml` extension)
+* add `yaml` to Contaos list of "editable file types" (found in System, Settimgs)
