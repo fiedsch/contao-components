@@ -188,4 +188,4 @@ If you want to make the file editable for Contao backend users:
 * place it in (a folder below) `files/`
 * make the file extension `.yaml` so Contaos syntax highlighting will be triggered
   (which will not happen with a `.yml` extension)
-* add `yaml` to Contaos list of "editable file types" (found in System, Settimgs)
+* add `yaml` to Contaos list of "editable file types" (found in System, Settings)
