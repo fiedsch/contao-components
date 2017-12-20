@@ -7,7 +7,7 @@
 ### JSON widget
 
 The `jsonWidget` can be used in DCA files to create a text field that contains a JSON string.
-While saving it will be checked if that sting is valid JSON. 
+While saving it will be checked if that the string is valid JSON. 
 The widget displays the JSON string with `JSON_PRETTY_PRINT` so that checks by the reader are are easier.
   
 
@@ -89,7 +89,7 @@ $member->save();
 
 ## Helper Classes
 
-### Reading YAML config files
+### Reading YAML config files (mostly experimental)
  
  ```php
 use Fiedsch\YamlConfigHelper;
@@ -145,7 +145,7 @@ $config->getEntry('data.messages.es', "¡buenos días!"); // "¡buenos días!"
 
 #### Data types
 
-withe the configuration file as above
+with the configuration file as above
 ```php
 $config->getEntry('data.messages');
 /*
