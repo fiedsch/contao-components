@@ -54,8 +54,7 @@ class YamlConfigHelper
     /**
      * @param string $pathToConfig
      */
-    protected
-    function assertFolder($pathToConfig)
+    protected function assertFolder($pathToConfig)
     {
         // TODO: (note: the folder will be created in assertFile() when creating the file!)
         // create the folder(s) if needed
@@ -69,8 +68,7 @@ class YamlConfigHelper
      * @param string $pathToConfig
      * @param array $defaults the defaults to use in case the config file does not exist
      */
-    protected
-    function assertFile($pathToConfig, $defaults)
+    protected function assertFile($pathToConfig, $defaults)
     {
         if (!file_exists(TL_ROOT . '/' . $pathToConfig)) {
             $configFile = new \File($pathToConfig);
@@ -86,8 +84,7 @@ class YamlConfigHelper
     /**
      * @return array
      */
-    public
-    function getConfig()
+    public function getConfig()
     {
         return $this->configData;
     }
@@ -98,8 +95,7 @@ class YamlConfigHelper
      * @param string $rootElementName the name to be used in $path as the "root element" of the data
      * @return mixed
      */
-    public
-    function getEntry($path, $fallback = null, $rootElementName = 'data')
+    public function getEntry($path, $fallback = null, $rootElementName = 'data')
     {
         $result = null;
         try {
@@ -122,8 +118,7 @@ class YamlConfigHelper
      *
      * @return mixed
      */
-    protected
-    function getConfigObject()
+    protected function getConfigObject()
     {
         return json_decode(json_encode($this->configData), false);
     }
