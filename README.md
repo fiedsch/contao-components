@@ -1,5 +1,6 @@
 # Components for Contao
 
+Abandoned! Please use `fiedsch/contao-jsonwidget` instead.
 
 ## Widgets
 

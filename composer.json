@@ -21,6 +21,7 @@
     "symfony/yaml": "~2.7 || ~2.8 || ~3.2 || ~3.4",
     "symfony/expression-language": "~2.7 || ~2.8 || ~3.2 || ~3.4"
   },
+  "abandoned": "fiedsch/contao-jsonwidget",
   "extra": {
     "contao": {
       "sources": {
